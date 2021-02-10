@@ -30,13 +30,26 @@ class BuildCmd(build_py):
     def run(self):
         # Should generate mapping between zonename and
         # GNU TZ format based on system timezones
+        # Country list, etc
         # see https://dateutil.readthedocs.io/en/stable/examples.html?highlight=tzstr#tzstr-examples
 
+        import l18n
+        import l18n.utils
+
+        l18n.set_language("en")  # base language is English
+
         with open("turris_timezone.py", "w") as f:
-            f.write("TZ_GNU = {\n")
+            f.write("_tzdata = [\n")
             for timezone in timezones():
-                f.write(f'    "{timezone}": "{extract_gnu_tz(timezone)}",\n')
-            f.write("}\n")
+                country_code = l18n.utils.get_country_code_from_tz(timezone.replace(" ", "_"))
+                country_name = l18n.territories.get(country_code)
+                city = l18n.tz_cities[timezone.replace(" ", "_")]
+                gnu = extract_gnu_tz(timezone)
+                f.write(f'    ("{timezone}", "{country_code}", "{country_name}", "{city}", "{gnu}"),\n')
+            f.write("]\n")
+            f.write("\n\n")
+            f.write('TZ_GNU = {e[0]: e[4] for e in _tzdata}\n')
+            f.write('COUNTRIES = {e[1]: e[2] for e in _tzdata}\n')
 
         # run original build cmd
         build_py.run(self)
@@ -51,7 +64,9 @@ setup(
     url="https://gitlab.nic.cz/turris/foris-controller/turris-timezone",
     license="GPL-3.0",
     install_requires=[],
-    setup_requires=[],
+    setup_requires=[
+        "l18n",
+    ],
     extras_require={
         "test": [
             "pytest",

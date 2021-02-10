@@ -20,3 +20,24 @@ def test_tz_gnu(timezone, tz_gnu):
     import turris_timezone
 
     assert turris_timezone.TZ_GNU.get(timezone) == tz_gnu
+
+
+@pytest.mark.parametrize(
+    "country_code,country_name",
+    (
+        ("CZ", "Czechia"),
+        ("GB", "United Kingdom"),
+        ("RU", "Russia"),
+        ("CN", "China"),
+    ),
+    ids=(
+        "CZ",
+        "GB",
+        "RU",
+        "CN",
+    ),
+)
+def test_countries(country_code, country_name):
+    import turris_timezone
+
+    assert turris_timezone.COUNTRIES.get(country_code) == country_name

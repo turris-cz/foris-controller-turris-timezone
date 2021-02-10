@@ -20,4 +20,6 @@ pip install .
 >>> import turris_timezone
 >>> turris_timezone.TZ_GNU.get("Europe/Prague")
 'CET-1CEST,M3.5.0,M10.5.0/3'
+>>> turris_timezone.COUNTRIES.get("CZ")
+'Czechia'
 ```
