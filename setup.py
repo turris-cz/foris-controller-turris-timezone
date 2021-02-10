@@ -52,8 +52,13 @@ setup(
     license="GPL-3.0",
     install_requires=[],
     setup_requires=[],
+    extras_require={
+        "test": [
+            "pytest",
+            "tox",
+        ],
+    },
     provides=["turris_timezone"],
-    extras_require={},
     py_modules=["turris_timezone"],
     cmdclass={"build_py": BuildCmd},
     entry_points={},
