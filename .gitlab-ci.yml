@@ -1,0 +1,9 @@
+stages:
+  - code-quality
+
+pytest:
+  image: registry.nic.cz/turris/foris-ci/python3
+  stage: code-quality
+  script:
+    - pip install tox
+    - tox
