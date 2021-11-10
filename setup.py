@@ -43,7 +43,10 @@ class BuildCmd(build_py):
             for timezone in timezones():
                 country_code = l18n.utils.get_country_code_from_tz(timezone.replace(" ", "_"))
                 country_name = l18n.territories.get(country_code)
-                city = l18n.tz_cities[timezone.replace(" ", "_")]
+                city = l18n.tz_cities.get(timezone.replace(" ", "_"), None)
+                if not city:
+                    # latest version of l18n doesn't know the timezone yet
+                    continue
                 gnu = extract_gnu_tz(timezone)
                 f.write(f'    ("{timezone}", "{country_code}", "{country_name}", "{city}", "{gnu}"),\n')
             f.write("]\n")
