@@ -60,7 +60,7 @@ class BuildCmd(build_py):
 
 setup(
     name="turris-timezone",
-    version="0.2.1",
+    version="0.2.2",
     description=open("README.md").read(),
     author="CZ.NIC, z. s. p. o.",
     author_email="packaging@turris.cz",
