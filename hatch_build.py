@@ -1,8 +1,8 @@
 import os
 import pathlib
+from typing import Any
 
-from setuptools import setup
-from setuptools.command.build_py import build_py
+from hatchling.builders.hooks.plugin.interface import BuildHookInterface
 
 BASE_DIR = pathlib.Path(os.environ.get("ZONEINFO_DIR", "/usr/share/zoneinfo"))
 
@@ -26,13 +26,9 @@ def extract_gnu_tz(timezone):
         return data[last_new_line + 1 :].decode()
 
 
-class BuildCmd(build_py):
-    def run(self):
-        # Should generate mapping between zonename and
-        # GNU TZ format based on system timezones
-        # Country list, etc
-        # see https://dateutil.readthedocs.io/en/stable/examples.html?highlight=tzstr#tzstr-examples
+class CompileTimezones(BuildHookInterface):
 
+    def initialize(self, version: str, build_data: dict[str, Any]) -> None:
         import l18n
         import l18n.utils
 
@@ -54,30 +50,7 @@ class BuildCmd(build_py):
             f.write('TZ_GNU = {e[0]: e[4] for e in _tzdata}\n')
             f.write('COUNTRIES = {e[1]: e[2] for e in _tzdata}\n')
 
-        # run original build cmd
-        build_py.run(self)
+        return super().initialize(version, build_data)
 
-
-setup(
-    name="turris-timezone",
-    version="0.2.2",
-    description=open("README.md").read(),
-    author="CZ.NIC, z. s. p. o.",
-    author_email="packaging@turris.cz",
-    url="https://gitlab.nic.cz/turris/foris-controller/turris-timezone",
-    license="GPL-3.0",
-    install_requires=[],
-    setup_requires=[
-        "l18n",
-    ],
-    extras_require={
-        "test": [
-            "pytest",
-            "tox",
-        ],
-    },
-    provides=["turris_timezone"],
-    py_modules=["turris_timezone"],
-    cmdclass={"build_py": BuildCmd},
-    entry_points={},
-)
+    def clean(self, versions: list[str]) -> None:
+        os.unlink("turris_timezone.py")
