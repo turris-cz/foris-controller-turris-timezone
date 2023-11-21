@@ -1,6 +1,6 @@
 import os
 import pathlib
-from typing import Any
+from typing import Any, Dict, List
 
 from hatchling.builders.hooks.plugin.interface import BuildHookInterface
 
@@ -28,7 +28,7 @@ def extract_gnu_tz(timezone):
 
 class CompileTimezones(BuildHookInterface):
 
-    def initialize(self, version: str, build_data: dict[str, Any]) -> None:
+    def initialize(self, version: str, build_data: Dict[str, Any]) -> None:
         import l18n
         import l18n.utils
 
@@ -52,5 +52,5 @@ class CompileTimezones(BuildHookInterface):
 
         return super().initialize(version, build_data)
 
-    def clean(self, versions: list[str]) -> None:
+    def clean(self, versions: List[str]) -> None:
         os.unlink("turris_timezone.py")
