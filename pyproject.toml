@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "turris-timezone"
-version = "0.3.0"
+version = "0.3.1"
 description = "Due to missing /usr/share/zoneinfo on OpenWRT this package should provide some basic data extracted from /usr/share/zoneinfo of build machnine."
 readme = "README.md"
 license = "GPL-3.0"
